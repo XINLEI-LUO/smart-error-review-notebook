@@ -6,10 +6,8 @@ A bilingual, browser-based learning analytics web app for recording mistakes, sc
 
 ## Live demo
 
-After publishing with GitHub Pages, add your URL here:
-
 ```text
-https://YOUR-USERNAME.github.io/smart-error-review-notebook/
+https://xinlei-luo.github.io/smart-error-review-notebook/
 ```
 
 ## Why this project matters
