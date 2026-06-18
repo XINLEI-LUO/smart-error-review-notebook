@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wrong Question Review MVP v4</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1 data-i18n="appTitle">Wrong Question Review</h1>
+      <p data-i18n="appSubtitle">Upload mistakes · Knowledge tags · Smart review · Daily tasks · Analytics</p>
+    </div>
+    <div class="header-actions">
+      <button id="languageToggle" class="ghost language-toggle" type="button">English | 中文</button>
+      <button id="installBtn" class="ghost hidden" data-i18n="installApp">Install as app</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <nav class="tabs" aria-label="Main functions">
+      <button class="tab active" data-view="addView" data-i18n="tabAdd">Add question</button>
+      <button class="tab" data-view="dailyView" data-i18n="tabDaily">Daily task</button>
+      <button class="tab" data-view="reviewView" data-i18n="tabReview">Review</button>
+      <button class="tab" data-view="listView" data-i18n="tabLibrary">Library</button>
+      <button class="tab" data-view="statsView" data-i18n="tabStats">Analytics</button>
+      <button class="tab" data-view="dataView" data-i18n="tabData">Backup / Restore</button>
+    </nav>
+
+    <section id="addView" class="view active">
+      <h2 data-i18n="tabAdd">Add question</h2>
+      <form id="questionForm" class="card form-grid">
+        <input type="hidden" id="editingId" />
+        <label><span data-i18n="categoryLabel">Subject / category</span>
+          <input id="category" data-i18n-placeholder="categoryPlaceholder" placeholder="e.g. Mathematics / English / Physics" required />
+        </label>
+
+        <label><span data-i18n="typeLabel">Question type</span>
+          <select id="type">
+            <option value="single" data-i18n="singleChoice">Single choice</option>
+            <option value="multiple" data-i18n="multipleChoice">Multiple choice</option>
+            <option value="blank" data-i18n="blankQuestion">Fill in the blank</option>
+          </select>
+        </label>
+
+        <label class="full"><span data-i18n="tagsLabel">Knowledge tags</span>
+          <input id="tags" data-i18n-placeholder="tagsPlaceholder" placeholder="e.g. Derivatives, monotonicity, cloze test. Separate tags with commas." />
+        </label>
+
+        <label class="full"><span data-i18n="questionTextLabel">Question text</span>
+          <textarea id="questionText" rows="4" data-i18n-placeholder="questionTextPlaceholder" placeholder="Enter the question. You can also upload only an image."></textarea>
+        </label>
+
+        <label class="full"><span data-i18n="imageLabel">Question image (optional)</span>
+          <input id="questionImage" type="file" accept="image/*" />
+        </label>
+        <p id="imageKeepHint" class="hint full hidden"><span data-i18n="imageKeepHint">Editing an existing question: the old image will be kept unless you upload a new one.</span></p>
+
+        <div id="optionsArea" class="full">
+          <div class="row-between">
+            <strong data-i18n="optionsLabel">Options</strong>
+            <button type="button" id="addOptionBtn" class="ghost" data-i18n="addOption">+ Add option</button>
+          </div>
+          <div id="optionsList"></div>
+          <p class="hint"><span data-i18n="optionsHint">Single/multiple choice questions can have any number of options. You can edit or delete options. Blank questions hide the option area automatically.</span></p>
+        </div>
+
+        <label id="blankAnswerWrap" class="full hidden"><span data-i18n="blankAnswerLabel">Blank answer</span>
+          <input id="blankAnswer" data-i18n-placeholder="blankAnswerPlaceholder" placeholder="e.g. 42; separate acceptable answers with |, such as 42|forty-two" />
+        </label>
+
+        <label class="full"><span data-i18n="explanationLabel">Explanation (optional)</span>
+          <textarea id="explanation" rows="3" data-i18n-placeholder="explanationPlaceholder" placeholder="You can add an explanation now, or add/edit it later."></textarea>
+        </label>
+
+        <div class="full row-actions">
+          <button class="primary" type="submit" id="saveQuestionBtn" data-i18n="saveQuestion">Save question</button>
+          <button class="ghost hidden" type="button" id="cancelEditBtn" data-i18n="cancelEdit">Cancel edit</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="dailyView" class="view">
+      <h2 data-i18n="tabDaily">Daily task</h2>
+      <div class="card controls daily-controls">
+        <label><span data-i18n="dailyCategoryLabel">Task category</span>
+          <select id="dailyCategory"></select>
+        </label>
+        <label><span data-i18n="dailyCountLabel">Daily task count</span>
+          <input id="dailyCount" type="number" min="1" value="20" />
+        </label>
+        <label class="checkbox"><input id="dailyIncludeNew" type="checkbox" checked /> <span data-i18n="includeNew">Include new questions</span></label>
+        <button id="generateDailyBtn" class="primary" data-i18n="generateDaily">Generate today’s task</button>
+        <button id="startDailyBtn" class="ghost" data-i18n="startDaily">Start today’s task</button>
+      </div>
+      <div id="dailyTaskArea"></div>
+    </section>
+
+    <section id="reviewView" class="view">
+      <h2 data-i18n="tabReview">Review</h2>
+      <div class="card controls">
+        <label><span data-i18n="reviewCategoryLabel">Choose category</span>
+          <select id="reviewCategory"></select>
+        </label>
+        <label><span data-i18n="modeLabel">Mode</span>
+          <select id="reviewMode">
+            <option value="random" data-i18n="modeRandom">Random</option>
+            <option value="order" data-i18n="modeOrder">In order</option>
+            <option value="smart" data-i18n="modeSmart">Smart review: due / weak first</option>
+          </select>
+        </label>
+        <label><span data-i18n="countLabel">Count</span>
+          <input id="reviewCount" type="number" min="1" value="10" />
+        </label>
+        <label class="checkbox"><input id="includeMastered" type="checkbox" /> <span data-i18n="includeMastered">Include mastered</span></label>
+        <button id="startReviewBtn" class="primary" data-i18n="startReview">Start review</button>
+      </div>
+
+      <div id="quizArea" class="card hidden"></div>
+      <div id="resultArea" class="card hidden"></div>
+    </section>
+
+    <section id="listView" class="view">
+      <h2 data-i18n="tabLibrary">Library</h2>
+      <div class="card controls list-controls">
+        <label><span data-i18n="searchLabel">Search questions</span>
+          <input id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search question text, options, answers, explanations, tags" />
+        </label>
+        <label><span data-i18n="filterCategoryLabel">Filter category</span>
+          <select id="listCategory"></select>
+        </label>
+        <label><span data-i18n="filterTagLabel">Filter tag</span>
+          <select id="listTag"></select>
+        </label>
+        <label><span data-i18n="sortLabel">Sort</span>
+          <select id="listSort">
+            <option value="created" data-i18n="sortCreated">Newest</option>
+            <option value="due" data-i18n="sortDue">Most urgent</option>
+            <option value="wrong" data-i18n="sortWrong">Most mistakes</option>
+            <option value="accuracy" data-i18n="sortErrorRate">Highest error rate</option>
+          </select>
+        </label>
+        <label class="checkbox"><input id="showMastered" type="checkbox" checked /> <span data-i18n="showMastered">Show mastered</span></label>
+      </div>
+      <div id="questionList"></div>
+    </section>
+
+    <section id="statsView" class="view">
+      <h2 data-i18n="tabStats">Analytics</h2>
+      <div class="card controls stats-controls">
+        <label><span data-i18n="statsCategoryLabel">Analytics category</span>
+          <select id="statsCategory"></select>
+        </label>
+        <label><span data-i18n="statsTagLabel">Analytics tag</span>
+          <select id="statsTag"></select>
+        </label>
+        <button id="refreshStatsBtn" class="primary" data-i18n="refreshStats">Refresh analytics</button>
+      </div>
+      <div id="statsArea"></div>
+    </section>
+
+    <section id="dataView" class="view">
+      <h2 data-i18n="tabData">Backup / Restore</h2>
+      <div class="card stack">
+        <p><span data-i18n="dataHint">This version stores data locally in your browser. Data may be lost if you change devices or clear browser storage, so export JSON backups regularly.</span></p>
+        <button id="exportBtn" class="primary" data-i18n="exportJson">Export question JSON</button>
+        <label><span data-i18n="importJson">Import question JSON</span>
+          <input id="importFile" type="file" accept="application/json" />
+        </label>
+      </div>
+    </section>
+  </main>
+
+  <template id="optionTemplate">
+    <div class="option-row">
+      <input class="option-text" data-i18n-placeholder="optionPlaceholder" placeholder="Option text, e.g. A. 12" />
+      <label class="answer-pick"><input type="checkbox" class="option-correct" /> <span data-i18n="correctLabel">Correct</span></label>
+      <button type="button" class="danger small remove-option" data-i18n="deleteBtn">Delete</button>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>

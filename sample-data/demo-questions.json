@@ -1,0 +1,40 @@
+[
+  {
+    "id": "demo-001",
+    "category": "Mathematics",
+    "type": "single",
+    "prompt": "For f(x)=x^2, what is f'(x)?",
+    "image": null,
+    "options": ["x", "2x", "x^3", "2"],
+    "answer": ["2x"],
+    "explanation": "Using the power rule, d(x^2)/dx = 2x.",
+    "tags": ["Calculus", "Derivative", "Power rule"],
+    "mastered": false,
+    "attempts": 0,
+    "correctCount": 0,
+    "wrongCount": 0,
+    "correctStreak": 0,
+    "lastReviewedAt": null,
+    "nextReviewAt": null,
+    "history": []
+  },
+  {
+    "id": "demo-002",
+    "category": "English",
+    "type": "blank",
+    "prompt": "Complete the sentence: She has been studying English ___ two years.",
+    "image": null,
+    "options": [],
+    "answer": "for",
+    "explanation": "Use 'for' with a duration of time.",
+    "tags": ["Grammar", "Present perfect continuous", "Preposition"],
+    "mastered": false,
+    "attempts": 0,
+    "correctCount": 0,
+    "wrongCount": 0,
+    "correctStreak": 0,
+    "lastReviewedAt": null,
+    "nextReviewAt": null,
+    "history": []
+  }
+]
